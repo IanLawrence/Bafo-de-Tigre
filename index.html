@@ -1,0 +1,151 @@
+<!DOCTYPE html> 
+<html> 
+	<head profile="http://dublincore.org/documents/dcq-html/">
+	
+		<title>Bafo-de-Tigre - Discover and rate Cachaça</title>
+		<meta name="keywords" content="Google maps, jQuery, mobile, android, HTML5" />
+		<meta name="description" content="Discover and rate Cachaça" />
+                <!--- don't barf on accents --->
+                <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		
+		<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+		<meta name="DC.title" content="Bafo-de-Tigre - Discover and rate cachaça" />
+		<meta name="DC.creator" content="Ian Lawrence" />
+		<meta name="DC.language" content="en"/>
+		
+                <!-- Stylesheets --->
+		<link rel="stylesheet" href="assets/css/jquery.mobile-1.0a4.1.min.css" />
+		
+                <!-- Javascript--->  
+             	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+                <script type="text/javascript" charset="utf-8" src="assets/js/phonegap.0.9.6.js"></script>
+                <script type="text/javascript" src="assets/js/main.js"></script>
+                <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script> 
+                <script type="text/javascript" src="assets/js/jquery-1.5.2.min.js"></script> 
+		<script type="text/javascript" src="assets/js/jquery.mobile-1.0a4.1.min.js"></script>
+		<script type="text/javascript" src="assets/js/jquery.ui.map.js"></script>
+                <script type="text/javascript" src="assets/js/db.js"></script>
+
+                
+ 
+		<script type="text/javascript">
+			// bind before jQuery Mobile executes
+			$(document).bind("mobileinit", function () {
+				$.mobile.ajaxEnabled  = true;
+                                $.mobile.loadingMessage = 'Please wait. It was a patient man who invented cachaça.';                   
+			});
+
+
+                       // force certain pages to be refreshed every time. Mark such pages with
+                       // 'data-cache="never"' ... this workaround (or something like it) might be in JQM sooner or later I hope 
+                
+                       jQuery('div').live('pagehide', function(event, ui){
+                         var page = jQuery(event.target);
+
+                         if(page.attr('data-cache') == 'never'){
+                         page.remove();
+                             };
+                             });
+
+                      // now we are refreshing the page we can pull the individual results OK
+                         $('#detail').live('pageshow', function (event, ui) {
+                                selectDrinkie();
+                         }); 
+
+
+                     // and we can execute to share our Top Cachaças
+
+                        $('#share').live('pageshow', function (event, ui) {
+                                exportTop10();
+                         });
+
+                     // refresh the dynamic cachaça listview
+
+                         $('#share').live('pagehide', function (event, ui) {
+                              backtoHome();
+                         });
+
+                     // on hide of add page refresh list
+
+                         $('#add').live('pagehide', function (event, ui) {
+                               window.location.href = 'index.html';
+                         });
+
+                
+                                       
+		</script>
+
+         
+     
+	</head> 
+
+  <!--- need to call init(); to add a document EventListener ->  ("deviceready", deviceInfo, true); to ensure phonegap is ready --->
+
+	<body onload="init();">
+
+		<div data-role="page" id="index">
+                        <div data-role="header" data-position="inline" data-theme="a">
+                        <a href="index.html" class="ui-btn-left" data-theme="a" data-icon="home" rel=external>Home</a>
+	                   <h1>Bafo de Tigre</h1>
+	                         <p>
+                                  <div align="center" data-role="fieldcontain" id="searchform">
+                                   <form action="javascript:searchTable();" method="get">
+                                    <input id="search" data-theme="c" placeholder="Search for a Cachaça" required>
+                                    <input type="submit" data-role="button" data-theme="a" value="Search">
+                                   </form>                  
+                                 
+                                  </div>
+                                  <br>    
+				</p>
+                </div>
+
+			
+
+			<div>	
+				
+				<!-- the result of the search will be rendered inside this div -->
+                               
+                                  <div align="center" id="top"><h2>My Top 10</h2></div>
+                                  <div align="center" id="searchresults"><h2>Search Results</h2></div>
+
+                                  <!--- pull from db --->   
+                                      
+                                      <div id="result" data-role="content">
+                                         
+                                      </div>
+                                      
+                                      <div id="searchresult" data-role="content">
+                                          
+                                      </div>
+                               
+                               
+	                              
+                                   <!--- /pull from db --->
+
+                                   <!--- drop and create db - used for testing - remove b4 live --->
+                                      <form>
+                                           <input type="button" value="Clear Database" onclick="dropTables()" />
+                                      </form>
+                         
+                                   <!--- /drop and create db - used for testing - remove b4 live--->
+				   
+                                   <!--- list view for menu --->
+				<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="c"> 
+					<li data-role="list-divider"></li> 
+                                       <!--- lazy load the key add page in the background--->
+					<li data-theme="a"><a href="add.html" data-prefetch>Add a Cachaça</a></li> 
+                                        <li data-theme="a"><a href="share.html" data-rel="dialog">Share my Top 10</a></li>  
+                                        <li data-theme="a"><a href="about.html" data-rel="dialog">About Bafo de Tigre</a></li>
+
+				</ul>
+				<!--- /list view for menu --->
+
+			</div>
+	
+		</div>
+		
+	
+		
+	</body>
+	
+</html>

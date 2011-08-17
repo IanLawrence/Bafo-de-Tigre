@@ -1,0 +1,110 @@
+<!DOCTYPE html> 
+<html> 
+	<head profile="http://dublincore.org/documents/dcq-html/">
+	
+		<title>Bafo-de-Tigre - Discover and rate Cachaça</title>
+		<meta name="keywords" content="Google maps, jQuery, mobile, android, HTML5" />
+		<meta name="description" content="Discover and rate Cachaça" />
+                <!--- don't barf on accents --->
+                <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		
+        </head>
+  <!--- need to call init(); to add a document EventListener ->  ("deviceready", deviceInfo, true); to ensure phonegap is ready --->
+
+	<body onload="init();"> 
+
+		<div id="all" class="" data-role="page">
+
+			<div data-role="header" data-position="inline" data-theme="a">
+				<h1>New Cachaça</a></h1>
+			</div>
+                    <script type="text/javascript">
+				$('#all').live("pageshow", function() {
+					
+					$('#map_canvas_2').gmap( { 'center': getLatLng(), 'callback': 
+						function (map) {
+							if ( navigator.geolocation ) {
+								watch = navigator.geolocation.watchPosition ( 
+									function( position ) { 
+										$('#map_canvas_2').gmap('clearMarkers');
+										$('#map_canvas_2').gmap('addMarker', { 'title': 'You are here!', 'bound': true, 'position':new google.maps.LatLng(position.coords.latitude, position.coords.longitude) }, function(map, marker) {
+											$('#map_canvas_2').gmap('addInfoWindow', { 'position': marker.getPosition(), 'content': 'You are here!' }, function(iw) {
+												$(marker).click(function() {
+													iw.open(map, marker);
+												});
+											});
+											map.panTo( marker.getPosition() );
+										});
+									}
+								);
+							}
+						}
+					}); 
+					
+					function getLatLng() {
+						if ( google.loader.ClientLocation != null ) {
+                                                        co = new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+                                                        document.getElementById('gps').value =  co;
+							return new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);	
+						}
+                                                // if it doesn't work use Belem as the location :)
+                                                co = new google.maps.LatLng(-1.603794, -48.515625);
+                                                document.getElementById('gps').value = co;
+						return new google.maps.LatLng(-1.603794, -48.515625);
+					}
+
+				});
+				
+				$('#all').live("pagehide", function() {
+					if ( navigator.geolocation ) {
+						navigator.geolocation.clearWatch(watch);
+                    }
+				});
+				
+				$('#all').live("pagecreate", function() {
+					var watch;
+				});
+
+			</script>
+			<div class="page" data-role="content" id="add">
+				
+				<div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+					<div id="map_canvas_2" style="height:300px;"></div>
+				</div>
+                                   <fieldset> 
+                                     <span class="error" style="display:none"><b>Name, Description and Rating are all compulsory fields</b></span>
+                                     <div data-role="fieldcontain">   
+                                         <input type="text" id="fname" size="30" placeholder="Name of the Cachaça" size="30" />
+                                     </div>
+                                     <div data-role="fieldcontain">            
+	                                 <textarea cols="40" rows="8" id="description" placeholder="Describe the joy (or otherwise) of drinking it"></textarea>
+                                      </div>
+                                     <div data-role="fieldcontain">
+                                      <b>Rating: 0 to 100</b>
+                                       <!---  use the new HTML5 valueAsNumber to convert the slider to a number --->
+                                         <input type='range' id="rating" min='0' max='100' value='ranking.valueAsNumber' />                      
+                                     </div>
+                                       <div id="viewport" class="viewport" style="display: none;">
+                                          <img id="image" src="" alt="" width="150" height="150" />
+                                       </div>  
+                                       <div data-role="fieldcontain">
+                                          <!---  call the camera  ---> 
+                                          <button data-theme="a" onclick="show_pic();">Take a Picture</a>                                  
+                                        </div> 
+                                     <div>
+                                        <input type="submit" data-role="button" data-theme="a" value="Add" onclick="insertDrink();">
+                                     </div>            
+                                       <input type="hidden" id="image" value="" />  
+                                       <input type="hidden" id="gps" value="" />  
+                                  </fieldset>        
+                               
+			</div>
+			
+			
+
+			
+			
+		</div>
+	</body>
+	
+</html>
